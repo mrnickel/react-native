@@ -31,7 +31,7 @@ const TimerMixin = require('react-timer-mixin');
 const TouchableWithoutFeedback = require('TouchableWithoutFeedback');
 const UIManager = require('UIManager');
 const ViewPropTypes = require('ViewPropTypes');
-const {ViewContextTypes} = require('ViewContext');
+const { ViewContextTypes } = require('ViewContext');
 
 /* $FlowFixMe(>=0.54.0 site=react_native_oss) This comment suppresses an error
  * found when Flow v0.54 was deployed. To see the error delete this comment and
@@ -49,7 +49,7 @@ const onlyMultiline = {
   children: true,
 };
 
-import type {ViewChildContext} from 'ViewContext';
+import type { ViewChildContext } from 'ViewContext';
 
 if (Platform.OS === 'android') {
   var AndroidTextInput = requireNativeComponent('AndroidTextInput', null);
@@ -449,6 +449,12 @@ const TextInput = createReactClass({
      */
     placeholderTextColor: ColorPropType,
     /**
+     * If `false`, scrolling of the text view will be disabled.
+     * The default value is `true`. Does only work with 'multiline={true}'.
+     * @platform ios
+     */
+    scrollEnabled: PropTypes.bool,
+    /**
      * If `true`, the text input obscures the text entered so that sensitive text
      * like passwords stay secure. The default value is `false`. Does not work with 'multiline={true}'.
      */
@@ -610,7 +616,7 @@ const TextInput = createReactClass({
   /**
    * Returns `true` if the input is currently focused; `false` otherwise.
    */
-  isFocused: function(): boolean {
+  isFocused: function (): boolean {
     return (
       TextInputState.currentlyFocusedField() ===
       ReactNative.findNodeHandle(this._inputRef)
@@ -622,7 +628,7 @@ const TextInput = createReactClass({
   _lastNativeText: (undefined: ?string),
   _lastNativeSelection: (undefined: ?Selection),
 
-  componentDidMount: function() {
+  componentDidMount: function () {
     this._lastNativeText = this.props.value;
     if (!this.context.focusEmitter) {
       if (this.props.autoFocus) {
@@ -645,7 +651,7 @@ const TextInput = createReactClass({
     }
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount: function () {
     this._focusSubscription && this._focusSubscription.remove();
     if (this.isFocused()) {
       this.blur();
@@ -669,11 +675,11 @@ const TextInput = createReactClass({
   /**
    * Removes all text from the `TextInput`.
    */
-  clear: function() {
-    this.setNativeProps({text: ''});
+  clear: function () {
+    this.setNativeProps({ text: '' });
   },
 
-  render: function() {
+  render: function () {
     if (Platform.OS === 'ios') {
       return UIManager.RCTVirtualText
         ? this._renderIOS()
@@ -683,7 +689,7 @@ const TextInput = createReactClass({
     }
   },
 
-  _getText: function(): ?string {
+  _getText: function (): ?string {
     return typeof this.props.value === 'string'
       ? this.props.value
       : typeof this.props.defaultValue === 'string'
@@ -691,11 +697,11 @@ const TextInput = createReactClass({
         : '';
   },
 
-  _setNativeRef: function(ref: any) {
+  _setNativeRef: function (ref: any) {
     this._inputRef = ref;
   },
 
-  _renderIOSLegacy: function() {
+  _renderIOSLegacy: function () {
     var textContainer;
 
     var props = Object.assign({}, this.props);
@@ -714,8 +720,8 @@ const TextInput = createReactClass({
           if (props[propKey]) {
             const error = new Error(
               'TextInput prop `' +
-                propKey +
-                '` is only supported with multiline.',
+              propKey +
+              '` is only supported with multiline.',
             );
             warning(false, '%s', error.stack);
           }
@@ -786,7 +792,7 @@ const TextInput = createReactClass({
     );
   },
 
-  _renderIOS: function() {
+  _renderIOS: function () {
     var props = Object.assign({}, this.props);
     props.style = [this.props.style];
 
@@ -837,12 +843,12 @@ const TextInput = createReactClass({
     );
   },
 
-  _renderAndroid: function() {
+  _renderAndroid: function () {
     const props = Object.assign({}, this.props);
     props.style = [this.props.style];
     props.autoCapitalize =
       UIManager.AndroidTextInput.Constants.AutoCapitalizationType[
-        props.autoCapitalize || 'sentences'
+      props.autoCapitalize || 'sentences'
       ];
     /* $FlowFixMe(>=0.53.0 site=react_native_fb,react_native_oss) This comment
      * suppresses an error when upgrading Flow's support for React. To see the
@@ -897,7 +903,7 @@ const TextInput = createReactClass({
     );
   },
 
-  _onFocus: function(event: Event) {
+  _onFocus: function (event: Event) {
     if (this.props.onFocus) {
       this.props.onFocus(event);
     }
@@ -907,13 +913,13 @@ const TextInput = createReactClass({
     }
   },
 
-  _onPress: function(event: Event) {
+  _onPress: function (event: Event) {
     if (this.props.editable || this.props.editable === undefined) {
       this.focus();
     }
   },
 
-  _onChange: function(event: Event) {
+  _onChange: function (event: Event) {
     // Make sure to fire the mostRecentEventCount first so it is already set on
     // native when the text value is set.
     if (this._inputRef) {
@@ -936,7 +942,7 @@ const TextInput = createReactClass({
     this.forceUpdate();
   },
 
-  _onSelectionChange: function(event: Event) {
+  _onSelectionChange: function (event: Event) {
     this.props.onSelectionChange && this.props.onSelectionChange(event);
 
     if (!this._inputRef) {
@@ -952,7 +958,7 @@ const TextInput = createReactClass({
     }
   },
 
-  componentDidUpdate: function() {
+  componentDidUpdate: function () {
     // This is necessary in case native updates the text and JS decides
     // that the update should be ignored and we should stick with the value
     // that we have in JS.
@@ -967,7 +973,7 @@ const TextInput = createReactClass({
 
     // Selection is also a controlled prop, if the native value doesn't match
     // JS, update to the JS value.
-    const {selection} = this.props;
+    const { selection } = this.props;
     if (
       this._lastNativeSelection &&
       selection &&
@@ -986,7 +992,7 @@ const TextInput = createReactClass({
     }
   },
 
-  _onBlur: function(event: Event) {
+  _onBlur: function (event: Event) {
     this.blur();
     if (this.props.onBlur) {
       this.props.onBlur(event);
@@ -997,11 +1003,11 @@ const TextInput = createReactClass({
     }
   },
 
-  _onTextInput: function(event: Event) {
+  _onTextInput: function (event: Event) {
     this.props.onTextInput && this.props.onTextInput(event);
   },
 
-  _onScroll: function(event: Event) {
+  _onScroll: function (event: Event) {
     this.props.onScroll && this.props.onScroll(event);
   },
 });
